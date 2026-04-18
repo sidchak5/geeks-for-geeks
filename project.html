@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdhiRATH — Digital Healthcare Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0A1628;--navy2:#0D1F3C;--navy3:#132848;
+  --teal:#0ABFBC;--teal2:#08A8A5;--teal3:#05888A;
+  --teal-light:#E0F7F7;--teal-pale:#F0FAFA;
+  --white:#FFFFFF;--gray-50:#F8FAFB;--gray-100:#EEF2F5;
+  --gray-200:#DDE4EC;--gray-400:#8FA3B8;--gray-600:#4A6070;
+  --red:#E84040;--red-light:#FFF0F0;
+  --amber:#F59E0B;--amber-light:#FFFBEB;
+  --green:#10B981;--green-light:#ECFDF5;
+  --font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-body);background:var(--gray-50);color:var(--navy);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;font-family:var(--font-body);}
+.container{max-width:1200px;margin:0 auto;padding:0 24px;}
+.section-pad{padding:80px 0;}
+.section-tag{font-size:11px;font-weight:700;letter-spacing:1.8px;color:var(--teal);text-transform:uppercase;margin-bottom:10px;display:block;}
+.section-title{font-family:var(--font-head);font-size:clamp(26px,3.5vw,42px);font-weight:800;color:var(--navy);letter-spacing:-0.5px;line-height:1.15;margin-bottom:14px;}
+.section-sub{font-size:16px;color:var(--gray-600);line-height:1.75;max-width:560px;font-weight:300;}
+section{display:none;}
+section.active{display:block;}
+
+/* NAV */
+nav{background:var(--navy);position:sticky;top:0;z-index:1000;border-bottom:1px solid rgba(10,191,188,0.18);}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:66px;gap:16px;}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0;cursor:pointer;}
+.logo-mark{width:38px;height:38px;background:linear-gradient(135deg,var(--teal),var(--teal3));border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.logo-mark svg{width:22px;height:22px;}
+.logo-text{font-family:var(--font-head);font-size:21px;font-weight:800;color:var(--white);letter-spacing:-0.3px;}
+.logo-text span{color:var(--teal);}
+.nav-links{display:flex;gap:4px;align-items:center;}
+.nav-link{color:var(--gray-400);font-size:13.5px;font-weight:500;padding:8px 13px;border-radius:8px;transition:all .2s;cursor:pointer;border:none;background:transparent;}
+.nav-link:hover,.nav-link.active{color:var(--white);background:rgba(10,191,188,0.12);}
+.lang-sel{background:rgba(255,255,255,0.07);border:1px solid rgba(10,191,188,0.25);color:var(--white);font-family:var(--font-body);font-size:13px;padding:7px 12px;border-radius:8px;cursor:pointer;outline:none;}
+.lang-sel option{background:var(--navy2);}
+.nav-sos{background:var(--red);color:var(--white);border:none;font-family:var(--font-head);font-size:13px;font-weight:700;padding:9px 18px;border-radius:8px;letter-spacing:.5px;animation:pulse-red 2s infinite;}
+@keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(232,64,64,0.4);}50%{box-shadow:0 0 0 8px rgba(232,64,64,0);}}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:transparent;border:none;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;}
+.mobile-menu{display:none;background:var(--navy2);border-top:1px solid rgba(10,191,188,0.1);padding:12px 24px 18px;}
+.mobile-menu.open{display:block;}
+.mobile-menu .nav-link{display:block;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);border-radius:0;width:100%;}
+
+/* BUTTONS */
+.btn-primary{background:var(--teal);color:var(--navy);font-family:var(--font-head);font-weight:700;font-size:15px;padding:14px 28px;border-radius:10px;border:none;transition:all .2s;letter-spacing:.3px;}
+.btn-primary:hover{background:var(--teal2);transform:translateY(-1px);}
+.btn-outline{background:transparent;color:var(--white);font-family:var(--font-head);font-weight:600;font-size:15px;padding:14px 28px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);transition:all .2s;}
+.btn-outline:hover{border-color:var(--teal);color:var(--teal);}
+.btn-sm{background:var(--teal);color:var(--navy);font-family:var(--font-head);font-size:12px;font-weight:700;padding:8px 16px;border-radius:8px;border:none;}
+
+/* HERO */
+.hero{background:var(--navy);min-height:90vh;display:flex;align-items:center;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;pointer-events:none;}
+.hero-circle1{position:absolute;width:650px;height:650px;border-radius:50%;background:radial-gradient(circle,rgba(10,191,188,0.09) 0%,transparent 70%);right:-120px;top:-120px;}
+.hero-circle2{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(10,191,188,0.06) 0%,transparent 70%);left:-80px;bottom:-80px;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(10,191,188,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(10,191,188,0.04) 1px,transparent 1px);background-size:60px 60px;}
+.hero-inner{max-width:1200px;margin:0 auto;padding:80px 24px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:1;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(10,191,188,0.1);border:1px solid rgba(10,191,188,0.25);color:var(--teal);font-size:11px;font-weight:700;padding:6px 14px;border-radius:100px;letter-spacing:1px;margin-bottom:22px;text-transform:uppercase;}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:blink 1.5s infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+h1.hero-title{font-family:var(--font-head);font-size:clamp(36px,4.5vw,60px);font-weight:800;color:var(--white);line-height:1.08;letter-spacing:-1.5px;margin-bottom:20px;}
+h1.hero-title em{color:var(--teal);font-style:normal;}
+.hero-sub{color:var(--gray-400);font-size:17px;line-height:1.75;margin-bottom:36px;font-weight:300;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
+.hero-stats{display:flex;gap:32px;margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.08);flex-wrap:wrap;}
+.stat .stat-num{font-family:var(--font-head);font-size:28px;font-weight:800;color:var(--teal);}
+.stat .stat-label{font-size:12px;color:var(--gray-400);margin-top:2px;}
+.hero-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.feature-pill{background:rgba(255,255,255,0.04);border:1px solid rgba(10,191,188,0.15);border-radius:14px;padding:22px;cursor:pointer;transition:all .25s;}
+.feature-pill:hover{background:rgba(10,191,188,0.08);border-color:rgba(10,191,188,0.35);transform:translateY(-2px);}
+.feature-pill.sos-pill{border-color:rgba(232,64,64,0.3);background:rgba(232,64,64,0.06);}
+.feature-pill.sos-pill:hover{background:rgba(232,64,64,0.1);border-color:rgba(232,64,64,0.5);}
+.fp-icon{width:42px;height:42px;border-radius:10px;background:rgba(10,191,188,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:13px;font-size:19px;}
+.sos-pill .fp-icon{background:rgba(232,64,64,0.15);}
+.fp-title{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--white);margin-bottom:5px;}
+.fp-desc{font-size:12px;color:var(--gray-400);line-height:1.5;}
+
+/* SERVICES */
+.services-section{background:var(--white);}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px;}
+.service-card{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:16px;padding:28px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.service-card:hover{border-color:var(--teal);transform:translateY(-3px);box-shadow:0 12px 40px rgba(10,191,188,0.12);}
+.service-card.emg{border-color:rgba(232,64,64,0.2);background:linear-gradient(135deg,#FFF5F5,var(--white));}
+.service-card.emg:hover{border-color:rgba(232,64,64,0.5);box-shadow:0 12px 40px rgba(232,64,64,0.1);}
+.svc-icon{width:52px;height:52px;border-radius:14px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px;}
+.svc-icon.red{background:var(--red-light);}
+.svc-icon.amber{background:var(--amber-light);}
+.svc-icon.green{background:var(--green-light);}
+.service-card h3{font-family:var(--font-head);font-size:17px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.service-card p{font-size:14px;color:var(--gray-600);line-height:1.65;}
+.svc-arrow{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:13px;font-weight:600;color:var(--teal);}
+.svc-arrow.red{color:var(--red);}
+
+/* RECORDS */
+.records-section{background:var(--gray-50);}
+.records-layout{display:grid;grid-template-columns:270px 1fr;gap:24px;margin-top:40px;}
+.sidebar{background:var(--white);border:1px solid var(--gray-200);border-radius:16px;padding:20px;height:fit-content;}
+.sidebar-head{font-size:11px;font-weight:700;color:var(--gray-400);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:14px;}
+.sb-item{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:10px;cursor:pointer;transition:all .2s;margin-bottom:3px;}
+.sb-item:hover{background:var(--teal-pale);}
+.sb-item.active{background:var(--teal-light);}
+.sb-icon{width:32px;height:32px;border-radius:8px;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.sb-item.active .sb-icon{background:rgba(10,191,188,0.2);}
+.sb-text{font-size:14px;font-weight:500;color:var(--navy);}
+.sb-sub{font-size:11px;color:var(--gray-400);}
+.records-main{display:flex;flex-direction:column;gap:20px;}
+.patient-card{background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:16px;padding:28px;color:var(--white);display:flex;align-items:center;gap:24px;position:relative;overflow:hidden;}
+.patient-card::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(10,191,188,0.07);pointer-events:none;}
+.avatar{width:72px;height:72px;border-radius:50%;background:rgba(10,191,188,0.18);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:26px;font-weight:800;color:var(--teal);border:2px solid rgba(10,191,188,0.3);flex-shrink:0;}
+.pt-info h3{font-family:var(--font-head);font-size:22px;font-weight:800;margin-bottom:4px;}
+.pt-info p{font-size:14px;color:rgba(255,255,255,0.55);margin-bottom:12px;}
+.pt-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.ptag{font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;border:1px solid rgba(10,191,188,0.3);color:var(--teal);}
+.vitals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.vital-card{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;padding:18px;text-align:center;}
+.vital-val{font-family:var(--font-head);font-size:24px;font-weight:800;color:var(--navy);}
+.vital-unit{font-size:11px;color:var(--gray-400);margin-left:2px;}
+.vital-label{font-size:12px;color:var(--gray-600);margin-top:4px;}
+.vital-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;}
+.dot-ok{background:var(--green);}
+.dot-watch{background:var(--amber);}
+.records-table{background:var(--white);border:1px solid var(--gray-200);border-radius:16px;overflow:hidden;}
+.tbl-head{padding:18px 24px;border-bottom:1px solid var(--gray-100);display:flex;justify-content:space-between;align-items:center;}
+.tbl-head h3{font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--navy);}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;font-size:11px;font-weight:700;color:var(--gray-400);letter-spacing:.8px;text-transform:uppercase;padding:11px 24px;background:var(--gray-50);}
+td{padding:13px 24px;font-size:14px;border-top:1px solid var(--gray-100);}
+tr:hover td{background:var(--gray-50);}
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;}
+.badge-ok{background:var(--green-light);color:var(--green);}
+.badge-watch{background:var(--amber-light);color:#B45309;}
+.badge-crit{background:var(--red-light);color:var(--red);}
+
+/* EMERGENCY */
+.emergency-section{background:var(--navy);min-height:100vh;}
+.sos-header{text-align:center;margin-bottom:48px;}
+.sos-header h2{font-family:var(--font-head);font-size:clamp(32px,4vw,50px);font-weight:800;color:var(--white);letter-spacing:-0.5px;margin-bottom:12px;}
+.sos-header p{color:rgba(255,255,255,0.45);font-size:16px;}
+.sos-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+.sos-left{text-align:center;}
+.sos-ring{width:230px;height:230px;border-radius:50%;border:2px solid rgba(232,64,64,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 28px;position:relative;animation:ring-pulse 3s infinite;}
+@keyframes ring-pulse{0%,100%{box-shadow:0 0 0 0 rgba(232,64,64,0.2);}50%{box-shadow:0 0 0 32px rgba(232,64,64,0);}}
+.sos-ring::before{content:'';position:absolute;inset:18px;border-radius:50%;border:1px solid rgba(232,64,64,0.18);}
+.sos-btn{width:165px;height:165px;border-radius:50%;background:var(--red);border:none;font-family:var(--font-head);font-size:16px;font-weight:800;color:var(--white);letter-spacing:1px;transition:all .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
+.sos-btn:hover{background:#D43030;transform:scale(1.05);}
+.sos-btn:active{transform:scale(0.95);}
+.s-icon{font-size:34px;}
+.sos-hint{color:rgba(255,255,255,0.4);font-size:13px;margin-bottom:22px;}
+.gps-box{background:rgba(10,191,188,0.1);border:1px solid rgba(10,191,188,0.28);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:20px;text-align:left;}
+.gi{font-size:20px;flex-shrink:0;}
+.gps-label{font-size:11px;color:rgba(255,255,255,0.45);font-weight:500;}
+.gps-val{font-size:13px;color:var(--white);font-weight:600;margin-top:2px;font-family:var(--font-head);}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.qa{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s;text-align:center;}
+.qa:hover{background:rgba(10,191,188,0.1);border-color:rgba(10,191,188,0.3);}
+.qi{font-size:24px;margin-bottom:7px;}
+.qt{font-size:13px;font-weight:600;color:var(--white);}
+.qs{font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;}
+.sos-right{display:flex;flex-direction:column;gap:16px;}
+.map-box{background:rgba(255,255,255,0.04);border:1px solid rgba(10,191,188,0.18);border-radius:16px;height:270px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(10,191,188,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(10,191,188,0.07) 1px,transparent 1px);background-size:32px 32px;}
+.map-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;text-align:center;}
+.pin-dot{width:16px;height:16px;border-radius:50%;background:var(--red);margin:0 auto;animation:ping 1.6s infinite;}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(232,64,64,0.55);}100%{box-shadow:0 0 0 22px rgba(232,64,64,0);}}
+.pin-label{background:var(--navy2);border:1px solid rgba(232,64,64,0.35);color:var(--white);font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;white-space:nowrap;margin-top:8px;}
+.locate-btn{background:var(--teal);color:var(--navy);font-family:var(--font-head);font-weight:700;font-size:12px;padding:9px 18px;border:none;border-radius:9px;display:flex;align-items:center;gap:6px;position:absolute;bottom:14px;right:14px;z-index:3;}
+.panel{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;}
+.panel h4{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--white);margin-bottom:16px;}
+.timeline{display:flex;flex-direction:column;}
+.tl-item{display:flex;gap:14px;padding-bottom:18px;position:relative;}
+.tl-item:not(:last-child)::after{content:'';position:absolute;left:15px;top:32px;width:1px;height:calc(100% - 10px);background:rgba(255,255,255,0.08);}
+.tl-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.tl-done{background:rgba(16,185,129,0.18);color:var(--green);}
+.tl-active{background:rgba(10,191,188,0.18);color:var(--teal);animation:blink 1.5s infinite;}
+.tl-pending{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.25);}
+.tl-title{font-size:13px;font-weight:600;color:var(--white);}
+.tl-sub{font-size:11px;color:rgba(255,255,255,0.38);margin-top:2px;}
+.hosp-list{display:flex;flex-direction:column;}
+.hosp-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.hosp-item:last-child{border:none;}
+.h-name{font-size:13px;font-weight:500;color:var(--white);}
+.h-dist{font-size:11px;color:var(--gray-400);}
+.h-call-btn{background:rgba(10,191,188,0.14);color:var(--teal);font-size:11px;font-weight:700;padding:5px 13px;border-radius:100px;border:none;}
+.h-call-btn:hover{background:rgba(10,191,188,0.28);}
+
+/* CONSULTATIONS */
+.consult-section{background:var(--white);}
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px;margin-top:32px;}
+.filter-btn{background:var(--gray-100);color:var(--gray-600);font-size:13px;font-weight:600;padding:8px 18px;border-radius:100px;border:none;transition:all .2s;}
+.filter-btn:hover,.filter-btn.active{background:var(--teal-light);color:var(--teal3);}
+.doc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.doc-card{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:16px;padding:24px;transition:all .25s;}
+.doc-card:hover{border-color:var(--teal);transform:translateY(-2px);box-shadow:0 8px 30px rgba(10,191,188,0.1);}
+.doc-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.doc-av{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:18px;font-weight:800;flex-shrink:0;}
+.av-blue{background:#EEF2FF;color:#4F46E5;}
+.av-green{background:var(--green-light);color:#059669;}
+.av-teal{background:var(--teal-light);color:var(--teal3);}
+.av-pink{background:#FDF2F8;color:#DB2777;}
+.av-amber{background:var(--amber-light);color:#D97706;}
+.av-navy{background:#EEF2FF;color:var(--navy);}
+.doc-name{font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--navy);}
+.doc-spec{font-size:12px;color:var(--teal3);font-weight:600;margin-top:2px;}
+.online-badge,.offline-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;margin-top:5px;}
+.online-badge{background:var(--green-light);color:var(--green);}
+.offline-badge{background:var(--gray-100);color:var(--gray-400);}
+.ob-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+.doc-meta{display:flex;gap:14px;font-size:13px;color:var(--gray-600);margin:12px 0;flex-wrap:wrap;}
+.doc-fee{font-size:13px;color:var(--gray-600);}
+.doc-actions{display:flex;gap:10px;margin-top:16px;}
+.btn-chat{flex:1;background:var(--navy);color:var(--white);font-family:var(--font-head);font-size:13px;font-weight:700;padding:10px;border-radius:10px;border:none;transition:all .2s;}
+.btn-chat:hover{background:var(--navy2);}
+.btn-vid{background:var(--teal-light);color:var(--teal3);font-family:var(--font-head);font-size:13px;font-weight:700;padding:10px 16px;border-radius:10px;border:none;transition:all .2s;}
+.btn-vid:hover{background:var(--teal);color:var(--white);}
+
+/* VIDEO MODAL */
+.v-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:2000;align-items:center;justify-content:center;}
+.v-modal.open{display:flex;}
+.v-box{background:var(--navy);border:1px solid rgba(10,191,188,0.2);border-radius:20px;width:90%;max-width:640px;overflow:hidden;animation:modal-in .3s ease;}
+@keyframes modal-in{from{transform:scale(0.92);opacity:0;}to{transform:scale(1);opacity:1;}}
+.v-bar{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;align-items:center;}
+.v-doc-name{font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--white);}
+.v-sub{font-size:11px;color:rgba(255,255,255,0.35);margin-top:2px;}
+.v-timer-wrap{display:flex;align-items:center;gap:7px;}
+.rec-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:blink 1s infinite;}
+.v-timer{font-size:13px;color:var(--red);font-weight:700;font-family:var(--font-head);}
+.v-screen{position:relative;height:280px;background:#050E1A;display:flex;align-items:center;justify-content:center;}
+.cam-ph{text-align:center;color:rgba(255,255,255,0.3);}
+.ci{font-size:48px;margin-bottom:10px;}
+.thumb{position:absolute;bottom:14px;right:14px;width:82px;height:62px;background:rgba(255,255,255,0.06);border:1px solid rgba(10,191,188,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.v-controls{padding:18px 20px;display:flex;align-items:center;justify-content:center;gap:12px;}
+.vc{width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:var(--white);font-size:17px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.vc:hover{background:rgba(10,191,188,0.18);border-color:var(--teal);}
+.vc-end{background:var(--red);border-color:var(--red);width:56px;height:56px;}
+.vc-end:hover{background:#C53030;}
+
+/* PRESCRIPTION */
+.rx-section{background:var(--gray-50);}
+.rx-layout{display:grid;grid-template-columns:1fr 360px;gap:24px;margin-top:40px;}
+.rx-list{display:flex;flex-direction:column;gap:14px;}
+.rx-card{background:var(--white);border:1px solid var(--gray-200);border-radius:14px;padding:20px;display:flex;gap:16px;align-items:center;transition:all .2s;}
+.rx-card:hover{border-color:var(--teal);box-shadow:0 4px 20px rgba(10,191,188,0.08);}
+.rx-ico{width:48px;height:48px;border-radius:12px;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.rx-body{flex:1;}
+.rx-body h4{font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--navy);}
+.rx-sub{font-size:12px;color:var(--gray-400);margin-top:2px;}
+.rx-progress{margin-top:9px;}
+.rx-days{font-size:11px;color:var(--gray-600);margin-bottom:4px;}
+.rx-bar{height:4px;background:var(--gray-100);border-radius:2px;overflow:hidden;}
+.rx-fill{height:100%;background:var(--teal);border-radius:2px;}
+.refill-btn{background:var(--navy);color:var(--white);font-family:var(--font-head);font-size:12px;font-weight:700;padding:9px 16px;border-radius:8px;border:none;white-space:nowrap;}
+.refill-btn:hover{background:var(--navy2);}
+.track-card{background:var(--white);border:1px solid var(--gray-200);border-radius:16px;padding:24px;}
+.track-card h3{font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--navy);margin-bottom:18px;}
+.order-info{background:var(--teal-pale);border:1px solid rgba(10,191,188,0.18);border-radius:10px;padding:12px 16px;margin-bottom:20px;}
+.ord-id{font-size:11px;color:var(--gray-400);}
+.ord-name{font-size:14px;font-weight:600;color:var(--navy);margin-top:2px;}
+.ord-eta{font-size:12px;color:var(--teal3);font-weight:600;margin-top:6px;}
+.track-steps{display:flex;flex-direction:column;}
+.ts{display:flex;gap:14px;padding-bottom:22px;position:relative;}
+.ts:not(:last-child)::after{content:'';position:absolute;left:16px;top:34px;width:2px;height:calc(100% - 12px);background:var(--gray-100);}
+.ts-ico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.ts-done{background:var(--green-light);color:var(--green);}
+.ts-active{background:var(--teal-light);color:var(--teal3);}
+.ts-pending{background:var(--gray-100);color:var(--gray-400);}
+.ts h5{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px;}
+.ts p{font-size:12px;color:var(--gray-400);}
+
+/* ALERTS */
+.alerts-section{background:var(--white);}
+.alerts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px;}
+.alert-card{border-radius:16px;padding:24px;border:1px solid;}
+.alert-danger{background:var(--red-light);border-color:rgba(232,64,64,0.2);}
+.alert-warning{background:var(--amber-light);border-color:rgba(245,158,11,0.2);}
+.alert-info{background:var(--teal-pale);border-color:rgba(10,191,188,0.2);}
+.alert-success{background:var(--green-light);border-color:rgba(16,185,129,0.2);}
+.alert-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.a-badge{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:100px;color:var(--white);}
+.ab-danger{background:var(--red);}
+.ab-warning{background:var(--amber);}
+.ab-info{background:var(--teal);}
+.ab-success{background:var(--green);}
+.a-date{font-size:11px;color:var(--gray-400);}
+.alert-card h4{font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.alert-card p{font-size:13px;color:var(--gray-600);line-height:1.65;}
+.alert-foot{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:12px;border-top:1px solid rgba(0,0,0,0.06);}
+.who-tag{font-size:11px;font-weight:600;color:var(--gray-600);}
+.a-affected{font-size:11px;color:var(--gray-400);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:var(--white);padding:14px 20px;border-radius:12px;font-size:14px;font-weight:500;border:1px solid rgba(10,191,188,0.25);z-index:9999;transform:translateY(100px);opacity:0;transition:all .32s cubic-bezier(.34,1.56,.64,1);max-width:320px;pointer-events:none;display:flex;align-items:center;gap:10px;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* FOOTER */
+footer{background:var(--navy);padding:52px 0 24px;border-top:1px solid rgba(10,191,188,0.1);}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+.fb-logo{font-family:var(--font-head);font-size:20px;font-weight:800;color:var(--white);margin-bottom:10px;}
+.fb-logo span{color:var(--teal);}
+.fb-desc{font-size:14px;color:rgba(255,255,255,0.38);line-height:1.75;}
+.fc-head{font-size:11px;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:14px;}
+.fc-link{display:block;font-size:14px;color:rgba(255,255,255,0.55);margin-bottom:8px;transition:color .2s;cursor:pointer;}
+.fc-link:hover{color:var(--teal);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.07);padding-top:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.footer-bottom p{font-size:13px;color:rgba(255,255,255,0.28);}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .services-grid{grid-template-columns:repeat(2,1fr);}
+  .doc-grid{grid-template-columns:repeat(2,1fr);}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;}
+  .hero-card-grid{display:none;}
+  .sos-layout{grid-template-columns:1fr;}
+  .rx-layout{grid-template-columns:1fr;}
+  .records-layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .vitals-grid{grid-template-columns:repeat(2,1fr);}
+  .alerts-grid{grid-template-columns:1fr;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+}
+@media(max-width:640px){
+  .services-grid,.doc-grid{grid-template-columns:1fr;}
+  .hero-stats{gap:16px;}
+  .hero-btns{flex-direction:column;}
+  .footer-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo" onclick="nav('home')">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7L12 2z" stroke="#0ABFBC" stroke-width="1.5"/><path d="M12 8v8M8 12h8" stroke="#0ABFBC" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <div class="logo-text">Adhi<span>RATH</span></div>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link active" onclick="nav('home',this)">Home</button>
+      <button class="nav-link" onclick="nav('health-records',this)">Health Records</button>
+      <button class="nav-link" onclick="nav('consultations',this)">Consult</button>
+      <button class="nav-link" onclick="nav('prescription',this)">Rx Delivery</button>
+      <button class="nav-link" onclick="nav('alerts',this)">Disease Alerts</button>
+      <select class="lang-sel" onchange="switchLang(this.value)">
+        <option value="en">🌐 English</option>
+        <option value="hi">हिंदी</option>
+        <option value="bn">বাংলা</option>
+        <option value="mr">मराठी</option>
+      </select>
+      <button class="nav-sos" onclick="nav('emergency')">🚨 SOS</button>
+    </div>
+    <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <button class="nav-link" onclick="nav('home');toggleMenu()">🏠 Home</button>
+    <button class="nav-link" onclick="nav('health-records');toggleMenu()">📋 Health Records</button>
+    <button class="nav-link" onclick="nav('consultations');toggleMenu()">👨‍⚕️ Consult a Doctor</button>
+    <button class="nav-link" onclick="nav('prescription');toggleMenu()">💊 Rx Delivery</button>
+    <button class="nav-link" onclick="nav('alerts');toggleMenu()">🔔 Disease Alerts</button>
+    <button class="nav-link" onclick="nav('emergency');toggleMenu()" style="color:var(--red)">🚨 Emergency SOS</button>
+    <select class="lang-sel" onchange="switchLang(this.value)" style="margin-top:12px;width:100%">
+      <option value="en">🌐 English</option>
+      <option value="hi">हिंदी</option>
+      <option value="bn">বাংলা</option>
+      <option value="mr">मराठी</option>
+    </select>
+  </div>
+</nav>
+
+<!-- HOME -->
+<section id="home" class="active">
+  <div class="hero">
+    <div class="hero-bg"><div class="hero-circle1"></div><div class="hero-circle2"></div><div class="hero-grid"></div></div>
+    <div class="hero-inner">
+      <div>
+        <div class="hero-badge"><span class="dot"></span><span id="badge-text">India's Healthcare Platform</span></div>
+        <h1 class="hero-title" id="hero-title">Your Health,<br><em>One Click</em><br>Away.</h1>
+        <p class="hero-sub" id="hero-sub">Comprehensive digital healthcare — from records and consultations to emergency dispatch. Powered by GPS, available in your language.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="nav('consultations')" id="h-btn1">Book a Consultation</button>
+          <button class="btn-outline" onclick="nav('emergency')" id="h-btn2">Emergency Services</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><div class="stat-num" id="c1">0</div><div class="stat-label">Patients Served</div></div>
+          <div class="stat"><div class="stat-num" id="c2">0</div><div class="stat-label">Verified Doctors</div></div>
+          <div class="stat"><div class="stat-num">4 min</div><div class="stat-label">Avg. Response</div></div>
+          <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Available</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="hero-card-grid">
+          <div class="feature-pill" onclick="nav('health-records')"><div class="fp-icon">📋</div><div class="fp-title">Health Records</div><div class="fp-desc">Secure digital vault for all your medical data</div></div>
+          <div class="feature-pill sos-pill" onclick="nav('emergency')"><div class="fp-icon">🚨</div><div class="fp-title">Emergency SOS</div><div class="fp-desc">GPS-tracked ambulance dispatch in seconds</div></div>
+          <div class="feature-pill" onclick="nav('consultations')"><div class="fp-icon">🎥</div><div class="fp-title">Video Consult</div><div class="fp-desc">Connect with verified specialists instantly</div></div>
+          <div class="feature-pill" onclick="nav('prescription')"><div class="fp-icon">💊</div><div class="fp-title">Rx Delivery</div><div class="fp-desc">Doorstep delivery with real-time tracking</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="services-section section-pad">
+    <div class="container">
+      <span class="section-tag">Everything you need</span>
+      <h2 class="section-title">Complete Healthcare<br>in One Platform</h2>
+      <p class="section-sub">From preventive care to emergency response — AdhiRATH covers every aspect of your health journey.</p>
+      <div class="services-grid">
+        <div class="service-card" onclick="nav('health-records')"><div class="svc-icon">📋</div><h3>Digital Health Records</h3><p>Securely store, access, and share your complete medical history, lab reports, prescriptions, and vitals from any device.</p><div class="svc-arrow">View Records →</div></div>
+        <div class="service-card emg" onclick="nav('emergency')"><div class="svc-icon red">🚑</div><h3>Emergency Services</h3><p>One-tap SOS triggers GPS-tracked ambulance dispatch, connects nearby hospitals, and alerts your emergency contacts instantly.</p><div class="svc-arrow red">Activate SOS →</div></div>
+        <div class="service-card" onclick="nav('consultations')"><div class="svc-icon">👨‍⚕️</div><h3>Online Consultations</h3><p>Instant video or chat sessions with 800+ verified doctors across all specialties. No travel, no waiting rooms required.</p><div class="svc-arrow">Find a Doctor →</div></div>
+        <div class="service-card" onclick="nav('prescription')"><div class="svc-icon green">💊</div><h3>Prescription Delivery</h3><p>Order medications from verified pharmacies with real-time delivery tracking and automatic refill reminders sent to your phone.</p><div class="svc-arrow">Manage Rx →</div></div>
+        <div class="service-card" onclick="nav('alerts')"><div class="svc-icon amber">🔔</div><h3>Disease Alerts</h3><p>WHO-verified outbreak warnings, seasonal disease alerts, and vaccination drives delivered based on your exact region.</p><div class="svc-arrow">View Alerts →</div></div>
+        <div class="service-card"><div class="svc-icon">🌐</div><h3>Multilingual Support</h3><p>Full support in English, Hindi, Bengali, and Marathi — making quality healthcare accessible across all of urban and rural India.</p><div class="svc-arrow">Change Language →</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HEALTH RECORDS -->
+<section id="health-records">
+  <div class="records-section section-pad">
+    <div class="container">
+      <span class="section-tag">Secure &amp; Private</span>
+      <h2 class="section-title">Your Health Dashboard</h2>
+      <p class="section-sub">All your medical data, organized and accessible in one secure place.</p>
+      <div class="records-layout">
+        <div class="sidebar">
+          <div class="sidebar-head">Categories</div>
+          <div class="sb-item active"><div class="sb-icon">📊</div><div><div class="sb-text">Overview</div><div class="sb-sub">All records</div></div></div>
+          <div class="sb-item"><div class="sb-icon">🧪</div><div><div class="sb-text">Lab Reports</div><div class="sb-sub">12 reports</div></div></div>
+          <div class="sb-item"><div class="sb-icon">💊</div><div><div class="sb-text">Prescriptions</div><div class="sb-sub">8 active</div></div></div>
+          <div class="sb-item"><div class="sb-icon">🩻</div><div><div class="sb-text">Imaging</div><div class="sb-sub">3 scans</div></div></div>
+          <div class="sb-item"><div class="sb-icon">💉</div><div><div class="sb-text">Vaccines</div><div class="sb-sub">Up to date</div></div></div>
+          <div class="sb-item"><div class="sb-icon">🫀</div><div><div class="sb-text">Vitals History</div><div class="sb-sub">30 entries</div></div></div>
+        </div>
+        <div class="records-main">
+          <div class="patient-card">
+            <div class="avatar">RS</div>
+            <div class="pt-info">
+              <h3>Rajesh Sharma</h3>
+              <p>Patient ID: AH-2024-00392 · DOB: 14 Mar 1985 · Blood: O+</p>
+              <div class="pt-tags"><span class="ptag">Hypertension</span><span class="ptag">Diabetic (Type 2)</span><span class="ptag">No Allergies</span></div>
+            </div>
+            <div style="margin-left:auto;text-align:right;position:relative;z-index:2;flex-shrink:0;">
+              <button class="btn-sm" onclick="toast('Health records shared via secure link ✓','✅')">Share Records</button>
+              <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:6px;">Last updated: today</div>
+            </div>
+          </div>
+          <div class="vitals-grid">
+            <div class="vital-card"><div class="vital-val">128<span class="vital-unit">/82</span></div><div class="vital-label"><span class="vital-dot dot-watch"></span>Blood Pressure</div></div>
+            <div class="vital-card"><div class="vital-val">98.4<span class="vital-unit">°F</span></div><div class="vital-label"><span class="vital-dot dot-ok"></span>Temperature</div></div>
+            <div class="vital-card"><div class="vital-val">72<span class="vital-unit">bpm</span></div><div class="vital-label"><span class="vital-dot dot-ok"></span>Heart Rate</div></div>
+            <div class="vital-card"><div class="vital-val">98<span class="vital-unit">%</span></div><div class="vital-label"><span class="vital-dot dot-ok"></span>SpO₂</div></div>
+          </div>
+          <div class="records-table">
+            <div class="tbl-head"><h3>Recent Lab Reports</h3><button class="btn-sm" onclick="toast('Upload dialog opened','📂')">+ Upload</button></div>
+            <table>
+              <thead><tr><th>Test Name</th><th>Date</th><th>Lab</th><th>Value</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>HbA1c</td><td>12 Apr 2025</td><td>Metropolis Labs</td><td>7.2%</td><td><span class="badge badge-watch">Monitor</span></td></tr>
+                <tr><td>Fasting Blood Sugar</td><td>12 Apr 2025</td><td>Metropolis Labs</td><td>118 mg/dL</td><td><span class="badge badge-watch">Monitor</span></td></tr>
+                <tr><td>Complete Blood Count</td><td>5 Apr 2025</td><td>SRL Diagnostics</td><td>Normal</td><td><span class="badge badge-ok">Normal</span></td></tr>
+                <tr><td>Lipid Profile</td><td>5 Apr 2025</td><td>SRL Diagnostics</td><td>LDL 142</td><td><span class="badge badge-watch">Monitor</span></td></tr>
+                <tr><td>Creatinine</td><td>28 Mar 2025</td><td>Dr Lal PathLabs</td><td>0.9 mg/dL</td><td><span class="badge badge-ok">Normal</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EMERGENCY SOS -->
+<section id="emergency">
+  <div class="emergency-section section-pad">
+    <div class="container">
+      <div class="sos-header">
+        <div class="hero-badge" style="justify-content:center;display:inline-flex;margin-bottom:16px;"><span class="dot" style="background:var(--red)"></span>Emergency Portal</div>
+        <h2>Emergency SOS Center</h2>
+        <p>Press the SOS button to instantly dispatch help. Your GPS location is shared automatically.</p>
+      </div>
+      <div class="sos-layout">
+        <div class="sos-left">
+          <div class="sos-ring"><button class="sos-btn" onclick="triggerSOS()"><span class="s-icon">🆘</span><span>SOS</span></button></div>
+          <p class="sos-hint">Tap to trigger GPS-tracked emergency dispatch</p>
+          <div class="gps-box"><span class="gi">📍</span><div><div class="gps-label">GPS Status</div><div class="gps-val" id="gps-val">Awaiting location access...</div></div></div>
+          <div class="quick-grid">
+            <div class="qa" onclick="callSvc('Ambulance — 108')"><div class="qi">🚑</div><div class="qt">Ambulance</div><div class="qs">108 National</div></div>
+            <div class="qa" onclick="callSvc('Fire Brigade — 101')"><div class="qi">🔥</div><div class="qt">Fire Brigade</div><div class="qs">101 Helpline</div></div>
+            <div class="qa" onclick="callSvc('Police — 100')"><div class="qi">👮</div><div class="qt">Police</div><div class="qs">100 National</div></div>
+            <div class="qa" onclick="callSvc('Women Helpline — 1091')"><div class="qi">🛡️</div><div class="qt">Women Helpline</div><div class="qs">1091</div></div>
+          </div>
+        </div>
+        <div class="sos-right">
+          <div class="map-box"><div class="map-grid"></div><div class="map-pin"><div class="pin-dot"></div><div class="pin-label" id="map-label">📍 Your Location</div></div><button class="locate-btn" onclick="getGPS()">📡 Locate Me</button></div>
+          <div class="panel">
+            <h4>🚑 Dispatch Status</h4>
+            <div class="timeline">
+              <div class="tl-item"><div class="tl-dot tl-done">✓</div><div><div class="tl-title">SOS Received</div><div class="tl-sub">System registered your request</div></div></div>
+              <div class="tl-item"><div class="tl-dot tl-active" id="tl2">⏳</div><div><div class="tl-title" id="tl2-t">Locating Nearest Unit</div><div class="tl-sub" id="tl2-s">GPS signal acquired</div></div></div>
+              <div class="tl-item"><div class="tl-dot tl-pending" id="tl3">○</div><div><div class="tl-title">Ambulance Dispatched</div><div class="tl-sub">ETA will appear here</div></div></div>
+              <div class="tl-item"><div class="tl-dot tl-pending" id="tl4">○</div><div><div class="tl-title">Help Arriving</div><div class="tl-sub">Track in real-time</div></div></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h4>🏥 Nearest Hospitals</h4>
+            <div class="hosp-list">
+              <div class="hosp-item"><div><div class="h-name">AIIMS Delhi</div><div class="h-dist">1.2 km · Open 24/7</div></div><button class="h-call-btn" onclick="callSvc('AIIMS Delhi')">Call Now</button></div>
+              <div class="hosp-item"><div><div class="h-name">Safdarjung Hospital</div><div class="h-dist">2.8 km · Open 24/7</div></div><button class="h-call-btn" onclick="callSvc('Safdarjung Hospital')">Call Now</button></div>
+              <div class="hosp-item"><div><div class="h-name">Ram Manohar Lohia</div><div class="h-dist">3.5 km · Open 24/7</div></div><button class="h-call-btn" onclick="callSvc('RML Hospital')">Call Now</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONSULTATIONS -->
+<section id="consultations">
+  <div class="consult-section section-pad">
+    <div class="container">
+      <span class="section-tag">Verified Specialists</span>
+      <h2 class="section-title">Find Your Doctor</h2>
+      <p class="section-sub">Consult with India's best doctors via video call or chat — available instantly, no appointment needed.</p>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterDocs('all',this)">All Doctors</button>
+        <button class="filter-btn" onclick="filterDocs('online',this)">🟢 Online Now</button>
+        <button class="filter-btn" onclick="filterDocs('cardio',this)">Cardiology</button>
+        <button class="filter-btn" onclick="filterDocs('general',this)">General</button>
+        <button class="filter-btn" onclick="filterDocs('derm',this)">Dermatology</button>
+        <button class="filter-btn" onclick="filterDocs('gyn',this)">Gynaecology</button>
+      </div>
+      <div class="doc-grid" id="doc-grid">
+        <div class="doc-card" data-spec="cardio" data-status="online"><div class="doc-head"><div class="doc-av av-blue">RK</div><div><div class="doc-name">Dr. Rahul Khanna</div><div class="doc-spec">Cardiologist</div><span class="online-badge"><span class="ob-dot"></span>Online Now</span></div></div><div class="doc-meta"><span>⭐ 4.9</span><span>👥 2,400+ patients</span><span>🏥 AIIMS</span></div><div class="doc-fee">₹499 / session · 15 min avg response</div><div class="doc-actions"><button class="btn-chat" onclick="toast('Chat started with Dr. Khanna','💬')">Chat Consult</button><button class="btn-vid" onclick="openVideo('Dr. Rahul Khanna')">📹 Video</button></div></div>
+        <div class="doc-card" data-spec="general" data-status="online"><div class="doc-head"><div class="doc-av av-green">SP</div><div><div class="doc-name">Dr. Sunita Prasad</div><div class="doc-spec">General Physician</div><span class="online-badge"><span class="ob-dot"></span>Online Now</span></div></div><div class="doc-meta"><span>⭐ 4.8</span><span>👥 5,100+ patients</span><span>🏥 Fortis</span></div><div class="doc-fee">₹299 / session · 5 min avg response</div><div class="doc-actions"><button class="btn-chat" onclick="toast('Chat started with Dr. Prasad','💬')">Chat Consult</button><button class="btn-vid" onclick="openVideo('Dr. Sunita Prasad')">📹 Video</button></div></div>
+        <div class="doc-card" data-spec="derm" data-status="offline"><div class="doc-head"><div class="doc-av av-teal">AM</div><div><div class="doc-name">Dr. Arun Mehta</div><div class="doc-spec">Dermatologist</div><span class="offline-badge"><span class="ob-dot"></span>Next: 3:00 PM</span></div></div><div class="doc-meta"><span>⭐ 4.7</span><span>👥 1,800+ patients</span><span>🏥 Apollo</span></div><div class="doc-fee">₹399 / session · Schedule a slot</div><div class="doc-actions"><button class="btn-chat" onclick="toast('Appointment booked at 3:00 PM with Dr. Mehta','📅')">Book Slot</button><button class="btn-vid" onclick="openVideo('Dr. Arun Mehta')">📹 Video</button></div></div>
+        <div class="doc-card" data-spec="gyn" data-status="online"><div class="doc-head"><div class="doc-av av-pink">NB</div><div><div class="doc-name">Dr. Nisha Banerjee</div><div class="doc-spec">Gynaecologist</div><span class="online-badge"><span class="ob-dot"></span>Online Now</span></div></div><div class="doc-meta"><span>⭐ 4.9</span><span>👥 3,200+ patients</span><span>🏥 Max</span></div><div class="doc-fee">₹599 / session · 10 min avg response</div><div class="doc-actions"><button class="btn-chat" onclick="toast('Chat started with Dr. Banerjee','💬')">Chat Consult</button><button class="btn-vid" onclick="openVideo('Dr. Nisha Banerjee')">📹 Video</button></div></div>
+        <div class="doc-card" data-spec="neuro" data-status="online"><div class="doc-head"><div class="doc-av av-amber">VR</div><div><div class="doc-name">Dr. Vikram Rao</div><div class="doc-spec">Neurologist</div><span class="online-badge"><span class="ob-dot"></span>Online Now</span></div></div><div class="doc-meta"><span>⭐ 4.8</span><span>👥 1,100+ patients</span><span>🏥 NIMHANS</span></div><div class="doc-fee">₹799 / session · 20 min avg response</div><div class="doc-actions"><button class="btn-chat" onclick="toast('Chat started with Dr. Rao','💬')">Chat Consult</button><button class="btn-vid" onclick="openVideo('Dr. Vikram Rao')">📹 Video</button></div></div>
+        <div class="doc-card" data-spec="paed" data-status="offline"><div class="doc-head"><div class="doc-av av-navy">PG</div><div><div class="doc-name">Dr. Priya Gupta</div><div class="doc-spec">Paediatrician</div><span class="offline-badge"><span class="ob-dot"></span>Next: 5:30 PM</span></div></div><div class="doc-meta"><span>⭐ 5.0</span><span>👥 4,700+ patients</span><span>🏥 KEM</span></div><div class="doc-fee">₹349 / session · Schedule a slot</div><div class="doc-actions"><button class="btn-chat" onclick="toast('Appointment booked at 5:30 PM with Dr. Gupta','📅')">Book Slot</button><button class="btn-vid" onclick="openVideo('Dr. Priya Gupta')">📹 Video</button></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRESCRIPTION -->
+<section id="prescription">
+  <div class="rx-section section-pad">
+    <div class="container">
+      <span class="section-tag">Doorstep Delivery</span>
+      <h2 class="section-title">Prescription Manager</h2>
+      <p class="section-sub">Order, track, and refill your medications seamlessly from verified pharmacies.</p>
+      <div class="rx-layout">
+        <div class="rx-list">
+          <div class="rx-card"><div class="rx-ico">💊</div><div class="rx-body"><h4>Metformin 500mg</h4><div class="rx-sub">Dr. Sunita Prasad · Twice daily after meals</div><div class="rx-progress"><div class="rx-days">18 days remaining (of 30)</div><div class="rx-bar"><div class="rx-fill" style="width:60%"></div></div></div></div><button class="refill-btn" onclick="toast('Refill ordered for Metformin — delivery in 2 hrs! 🚐','🚐')">Refill</button></div>
+          <div class="rx-card"><div class="rx-ico">💊</div><div class="rx-body"><h4>Amlodipine 5mg</h4><div class="rx-sub">Dr. Rahul Khanna · Once daily, morning</div><div class="rx-progress"><div class="rx-days">5 days remaining — refill soon!</div><div class="rx-bar"><div class="rx-fill" style="width:17%;background:var(--red)"></div></div></div></div><button class="refill-btn" onclick="toast('Urgent refill dispatched for Amlodipine! ⚡','⚡')">Refill Now</button></div>
+          <div class="rx-card"><div class="rx-ico">💊</div><div class="rx-body"><h4>Atorvastatin 10mg</h4><div class="rx-sub">Dr. Rahul Khanna · Once daily, night</div><div class="rx-progress"><div class="rx-days">22 days remaining (of 30)</div><div class="rx-bar"><div class="rx-fill" style="width:73%"></div></div></div></div><button class="refill-btn" onclick="toast('Refill scheduled for Atorvastatin ✓','✅')">Refill</button></div>
+          <div class="rx-card"><div class="rx-ico" style="background:var(--green-light)">💉</div><div class="rx-body"><h4>Insulin Glargine</h4><div class="rx-sub">Dr. Sunita Prasad · 10 units, bedtime</div><div class="rx-progress"><div class="rx-days">10 days remaining (of 30)</div><div class="rx-bar"><div class="rx-fill" style="width:33%;background:var(--amber)"></div></div></div></div><button class="refill-btn" onclick="toast('Insulin refill en route — arrives by 6 PM 🏍️','🏍️')">Refill</button></div>
+        </div>
+        <div class="track-card">
+          <h3>📦 Current Delivery</h3>
+          <div class="order-info"><div class="ord-id">Order #AH-RX-20348</div><div class="ord-name">Metformin + Atorvastatin</div><div class="ord-eta">ETA: 45 minutes</div></div>
+          <div class="track-steps">
+            <div class="ts"><div class="ts-ico ts-done">✓</div><div><h5>Order Confirmed</h5><p>MedPlus Pharmacy, Connaught Place</p></div></div>
+            <div class="ts"><div class="ts-ico ts-done">✓</div><div><h5>Prescription Verified</h5><p>Pharmacist reviewed your Rx</p></div></div>
+            <div class="ts"><div class="ts-ico ts-done">✓</div><div><h5>Packed &amp; Ready</h5><p>Medicines quality checked</p></div></div>
+            <div class="ts"><div class="ts-ico ts-active">🛵</div><div><h5>Out for Delivery</h5><p>Ravi (rider) is on the way</p></div></div>
+            <div class="ts"><div class="ts-ico ts-pending">○</div><div><h5>Delivered</h5><p>Expected by 5:30 PM</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISEASE ALERTS -->
+<section id="alerts">
+  <div class="alerts-section section-pad">
+    <div class="container">
+      <span class="section-tag">WHO Verified · Live Updates</span>
+      <h2 class="section-title">Disease Alerts &amp; Advisories</h2>
+      <p class="section-sub">Real-time outbreak alerts, seasonal warnings, and vaccination advisories for your region.</p>
+      <div class="alerts-grid">
+        <div class="alert-card alert-danger"><div class="alert-top"><span class="a-badge ab-danger">High Alert</span><span class="a-date">18 Apr 2025</span></div><h4>Dengue Outbreak — Delhi NCR</h4><p>Rising dengue cases reported across South and East Delhi. Avoid stagnant water near homes. Use mosquito repellent and wear full-sleeve clothing at all times outdoors.</p><div class="alert-foot"><span class="who-tag">🌐 WHO Verified</span><span class="a-affected">4,200 cases reported</span></div></div>
+        <div class="alert-card alert-warning"><div class="alert-top"><span class="a-badge ab-warning">Advisory</span><span class="a-date">17 Apr 2025</span></div><h4>Seasonal Flu — North India</h4><p>Influenza cases rising due to weather transition. High-risk groups (elderly, children) should get flu shots. Practice frequent hand washing and mask usage in crowded areas.</p><div class="alert-foot"><span class="who-tag">🌐 WHO Verified</span><span class="a-affected">Seasonal warning</span></div></div>
+        <div class="alert-card alert-info"><div class="alert-top"><span class="a-badge ab-info">Information</span><span class="a-date">15 Apr 2025</span></div><h4>Cholera Prevention — Mumbai</h4><p>Post-monsoon advisories in place. Drink only boiled or bottled water. Report any suspected cases of acute watery diarrhoea to local health centres immediately.</p><div class="alert-foot"><span class="who-tag">🌐 WHO Verified</span><span class="a-affected">Mumbai &amp; Thane</span></div></div>
+        <div class="alert-card alert-success"><div class="alert-top"><span class="a-badge ab-success">Vaccination</span><span class="a-date">14 Apr 2025</span></div><h4>Free Polio Drive — National</h4><p>National Polio Immunisation Day on April 21st. All children under 5 to receive oral polio vaccine at nearest government health centre, completely free of cost.</p><div class="alert-foot"><span class="who-tag">🌐 WHO Verified</span><span class="a-affected">Pan-India initiative</span></div></div>
+        <div class="alert-card alert-warning"><div class="alert-top"><span class="a-badge ab-warning">Watch</span><span class="a-date">12 Apr 2025</span></div><h4>Heat Stroke Risk — Rajasthan &amp; UP</h4><p>Temperatures forecast to exceed 45°C. Avoid outdoor exposure between 12 PM–4 PM. Stay hydrated and use ORS packets available at PHCs at no cost across all districts.</p><div class="alert-foot"><span class="who-tag">🌐 WHO Verified</span><span class="a-affected">Rajasthan, UP, Haryana</span></div></div>
+        <div class="alert-card alert-info"><div class="alert-top"><span class="a-badge ab-info">Update</span><span class="a-date">10 Apr 2025</span></div><h4>COVID-19 Situation Report</h4><p>New subvariant detected in international travellers. No community transmission confirmed in India. Masks recommended in crowded spaces. Booster doses now available at all PHCs.</p><div class="alert-foot"><span class="who-tag">🌐 WHO Verified</span><span class="a-affected">Global monitoring</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO CALL MODAL -->
+<div class="v-modal" id="v-modal" onclick="closeVideoOutside(event)">
+  <div class="v-box">
+    <div class="v-bar">
+      <div><div class="v-doc-name" id="v-name">Dr. Rahul Khanna</div><div class="v-sub">AdhiRATH Secure Video Consultation · End-to-End Encrypted</div></div>
+      <div class="v-timer-wrap"><div class="rec-dot"></div><div class="v-timer" id="v-timer">00:00</div></div>
+    </div>
+    <div class="v-screen">
+      <div class="cam-ph"><div class="ci">📷</div><p>Video stream starting...</p><small>Camera &amp; microphone permission required</small></div>
+      <div class="thumb">👨‍⚕️</div>
+    </div>
+    <div class="v-controls">
+      <button class="vc" onclick="toast('Microphone muted','🎙️')">🎙️</button>
+      <button class="vc" onclick="toast('Camera toggled','📷')">📷</button>
+      <button class="vc vc-end" onclick="closeVideo()">📵</button>
+      <button class="vc" onclick="toast('In-call chat opened','💬')">💬</button>
+      <button class="vc" onclick="toast('Screen sharing started','🖥️')">🖥️</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast-el"><span id="toast-icon">✅</span><span id="toast-msg"></span></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div><div class="fb-logo">Adhi<span>RATH</span></div><p class="fb-desc">India's comprehensive digital healthcare platform — connecting patients with doctors, emergency services, and health information across all languages and geographies.</p></div>
+      <div><div class="fc-head">Services</div><span class="fc-link" onclick="nav('health-records')">Health Records</span><span class="fc-link" onclick="nav('emergency')">Emergency SOS</span><span class="fc-link" onclick="nav('consultations')">Consultations</span><span class="fc-link" onclick="nav('prescription')">Rx Delivery</span><span class="fc-link" onclick="nav('alerts')">Disease Alerts</span></div>
+      <div><div class="fc-head">Support</div><span class="fc-link">How it Works</span><span class="fc-link">FAQs</span><span class="fc-link">Contact Support</span><span class="fc-link">Privacy Policy</span><span class="fc-link">Terms of Use</span></div>
+      <div><div class="fc-head">Emergency Nos.</div><a class="fc-link" href="tel:108">🚑 Ambulance: 108</a><a class="fc-link" href="tel:100">👮 Police: 100</a><a class="fc-link" href="tel:101">🔥 Fire: 101</a><a class="fc-link" href="tel:1091">🛡️ Women: 1091</a><a class="fc-link" href="tel:1098">👶 Child: 1098</a></div>
+    </div>
+    <div class="footer-bottom"><p>© 2025 AdhiRATH Healthcare. All rights reserved.</p><p>Made with ❤️ for India's health</p></div>
+  </div>
+</footer>
+
+<script>
+// ── SPA Navigation ──
+function nav(id, btn) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (btn) {
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+
+// ── Mobile Menu ──
+function toggleMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+
+// ── Toast ──
+let toastTimer = null;
+function toast(msg, icon) {
+  const el = document.getElementById('toast-el');
+  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-icon').textContent = icon || '✅';
+  el.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3600);
+}
+
+// ── Counter Animation ──
+function animateCount(id, target, suffix) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let cur = 0;
+  const step = Math.ceil(target / 60);
+  const t = setInterval(() => {
+    cur = Math.min(cur + step, target);
+    el.textContent = cur.toLocaleString('en-IN') + (suffix || '');
+    if (cur >= target) clearInterval(t);
+  }, 25);
+}
+
+// ── GPS ──
+function getGPS() {
+  const valEl = document.getElementById('gps-val');
+  const lblEl = document.getElementById('map-label');
+  if (valEl) valEl.textContent = 'Acquiring GPS signal...';
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const lat = pos.coords.latitude.toFixed(4);
+        const lon = pos.coords.longitude.toFixed(4);
+        const acc = Math.round(pos.coords.accuracy);
+        if (valEl) valEl.textContent = lat + '°N, ' + lon + '°E  ·  ±' + acc + 'm';
+        if (lblEl) lblEl.textContent = '📍 ' + lat + '°N, ' + lon + '°E';
+        toast('GPS locked! Location shared with emergency services', '📍');
+      },
+      () => {
+        if (valEl) valEl.textContent = '28.6139°N, 77.2090°E (Delhi — estimated)';
+        if (lblEl) lblEl.textContent = '📍 28.6139°N, 77.2090°E';
+        toast('Using estimated location. Enable GPS for precision.', '⚠️');
+      },
+      { timeout: 8000, enableHighAccuracy: true }
+    );
+  } else {
+    if (valEl) valEl.textContent = '28.6139°N, 77.2090°E (estimated)';
+    toast('GPS not supported — using estimated location.', '⚠️');
+  }
+}
+
+// ── Emergency SOS ──
+function triggerSOS() {
+  getGPS();
+  toast('SOS Activated! Dispatching help to your location...', '🚨');
+  setTimeout(() => {
+    const d = document.getElementById('tl2');
+    if (d) { d.className = 'tl-dot tl-done'; d.textContent = '✓'; }
+    const t = document.getElementById('tl2-t');
+    if (t) t.textContent = 'Nearest Unit Found';
+    const s = document.getElementById('tl2-s');
+    if (s) s.textContent = 'Ambulance DL-1X-4823 assigned';
+  }, 1500);
+  setTimeout(() => {
+    const d = document.getElementById('tl3');
+    if (d) { d.className = 'tl-dot tl-active'; d.textContent = '🚑'; }
+  }, 3000);
+  setTimeout(() => {
+    const d3 = document.getElementById('tl3');
+    if (d3) { d3.className = 'tl-dot tl-done'; d3.textContent = '✓'; }
+    const d4 = document.getElementById('tl4');
+    if (d4) { d4.className = 'tl-dot tl-active'; d4.textContent = '📍'; }
+    toast('Ambulance dispatched! ETA 4 minutes.', '🚑');
+  }, 5500);
+}
+
+function callSvc(name) {
+  toast('Connecting to ' + name + '...', '📞');
+}
+
+// ── Video Call ──
+let callInterval = null, callSecs = 0;
+
+function openVideo(docName) {
+  document.getElementById('v-name').textContent = docName;
+  document.getElementById('v-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  callSecs = 0;
+  if (callInterval) clearInterval(callInterval);
+  callInterval = setInterval(() => {
+    callSecs++;
+    const m = String(Math.floor(callSecs / 60)).padStart(2, '0');
+    const s = String(callSecs % 60).padStart(2, '0');
+    const el = document.getElementById('v-timer');
+    if (el) el.textContent = m + ':' + s;
+  }, 1000);
+  toast('Connecting secure video call with ' + docName + '...', '🎥');
+}
+
+function closeVideo() {
+  document.getElementById('v-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  if (callInterval) clearInterval(callInterval);
+  toast('Video call ended. Summary sent to your email.', '📧');
+}
+
+function closeVideoOutside(e) {
+  if (e.target === document.getElementById('v-modal')) closeVideo();
+}
+
+// ── Doctor Filter ──
+function filterDocs(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.doc-card').forEach(card => {
+    const show = filter === 'all' || filter === card.dataset.status || filter === card.dataset.spec;
+    card.style.display = show ? '' : 'none';
+  });
+}
+
+// ── Multilingual ──
+const translations = {
+  en: { badge:"India's Healthcare Platform", title:"Your Health,<br><em>One Click</em><br>Away.", sub:"Comprehensive digital healthcare — from records and consultations to emergency dispatch. Powered by GPS, available in your language.", btn1:"Book a Consultation", btn2:"Emergency Services", lang:"English" },
+  hi: { badge:"भारत का स्वास्थ्य मंच", title:"आपका स्वास्थ्य,<br><em>एक क्लिक में</em>", sub:"रिकॉर्ड से आपातकालीन सेवाओं तक — AdhiRATH सब कुछ संभालता है। GPS और हिंदी में उपलब्ध।", btn1:"परामर्श बुक करें", btn2:"आपातकालीन सेवाएं", lang:"हिंदी" },
+  bn: { badge:"ভারতের স্বাস্থ্যসেবা প্ল্যাটফর্ম", title:"আপনার স্বাস্থ্য,<br><em>এক ক্লিকে</em>", sub:"রেকর্ড থেকে জরুরি পরিষেবা পর্যন্ত — AdhiRATH সব কভার করে। GPS এবং বাংলায় উপলব্ধ।", btn1:"পরামর্শ বুক করুন", btn2:"জরুরি পরিষেবা", lang:"বাংলা" },
+  mr: { badge:"भारताचे आरोग्य व्यासपीठ", title:"तुमचे आरोग्य,<br><em>एका क्लिकवर</em>", sub:"रेकॉर्ड ते आपत्कालीन सेवांपर्यंत — AdhiRATH सर्व काही कव्हर करतो। GPS आणि मराठीत उपलब्ध।", btn1:"सल्ला बुक करा", btn2:"आपत्कालीन सेवा", lang:"मराठी" }
+};
+
+function switchLang(lang) {
+  const t = translations[lang] || translations.en;
+  const set = (id, val, html) => { const el = document.getElementById(id); if (el) { if (html) el.innerHTML = val; else el.textContent = val; } };
+  set('badge-text', t.badge);
+  set('hero-title', t.title, true);
+  set('hero-sub', t.sub);
+  set('h-btn1', t.btn1);
+  set('h-btn2', t.btn2);
+  toast('Language switched to ' + t.lang, '🌐');
+}
+
+// ── Sidebar clicks ──
+document.querySelectorAll('.sb-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+  });
+});
+
+// ── Escape key closes modal ──
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideo(); });
+
+// ── Init ──
+window.addEventListener('load', () => {
+  animateCount('c1', 50000, '+');
+  animateCount('c2', 800, '+');
+  getGPS();
+});
+</script>
+</body>
+</html>
